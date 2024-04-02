@@ -16,7 +16,7 @@ n_steps_channel_selection: 2 # tuned
 # checkpoints to average
 avg_models: 10 # tuned
 number_of_epochs: 350 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+lr: 0.001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 4 # tuned
 
 # DATA AUGMENTATION

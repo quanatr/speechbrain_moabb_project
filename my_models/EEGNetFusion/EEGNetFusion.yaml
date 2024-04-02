@@ -16,7 +16,7 @@ n_steps_channel_selection: 2 # tuned
 # checkpoints to average
 avg_models: 10 # tuned
 number_of_epochs: 350 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+lr: 0.001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 4 # tuned
 
 # DATA AUGMENTATION
@@ -33,21 +33,21 @@ shift_delta_: 1 # tuned
 snr_white_low: 15.0 # tuned
 snr_white_delta: 19.1 # tuned
 
-# #MODEL
-# # branch 1
-# cnn_temporal_kernels_b1: 30 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b1: 33 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b1: 16 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64,discrete=True)"
-# # branch 2
-# cnn_temporal_kernels_b2: 40 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b2: 128 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b2: 32 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
-# # branch 3
-# cnn_temporal_kernels_b3: 60 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b3: 256 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
-# # common parameters
-# dropout: 0.5 # @orion_step1: --dropout~"uniform(0, 0.5)" 
+# MODEL
+# branch 1
+cnn_temporal_kernels_b1: 16 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 100,discrete=True)"
+cnn_temporal_kernelsize_b1: 32 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b1: 16 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64,discrete=True)"
+# branch 2
+cnn_temporal_kernels_b2: 32 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 100,discrete=True)"
+cnn_temporal_kernelsize_b2: 64 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b2: 32 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
+# branch 3
+cnn_temporal_kernels_b3: 64 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 100,discrete=True)"
+cnn_temporal_kernelsize_b3: 128 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
+# common parameters
+dropout: 0.5 # @orion_step1: --dropout~"uniform(0, 0.5)" 
 
 ##############################################################################################################
 # OTHER HPARS
@@ -154,21 +154,6 @@ normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
 
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
-# branch 1
-cnn_temporal_kernels_b1: 8
-cnn_temporal_kernelsize_b1: 32
-cnn_sep_temporal_kernelsize_b1: 16
-
-# branch 2
-cnn_temporal_kernels_b2: 16
-cnn_temporal_kernelsize_b2: 64
-cnn_sep_temporal_kernelsize_b2: 32
-
-# branch 3
-cnn_temporal_kernels_b3: 32
-cnn_temporal_kernelsize_b3: 128
-cnn_sep_temporal_kernelsize_b3: 64
-
 # common parameters
 cnn_depth_multiplier: 2
 cnn_depth_max_norm: 1
@@ -178,7 +163,6 @@ cnn_sep_temporal_pool_size: 8
 cnn_pool_type: "avg"
 dense_n_neurons: 4
 dense_max_norm: 0.25
-dropout: 0.5
 activation_type: 'elu'
 
 model: !new:models.MyModel.EEGNetFusion
