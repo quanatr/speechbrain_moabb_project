@@ -39,9 +39,9 @@ cnn_second_kernels: 25 # @orion_step1: --cnn_second_kernels~"choices([25, 50, 75
 cnn_third_kernels: 50 # @orion_step1: --cnn_third_kernels~"choices([50, 100, 150])"
 cnn_fourth_kernels: 100 # @orion_step1: --cnn_fourth_kernels~"choices([100, 200, 300])"
 cnn_fifth_kernels: 200 # @orion_step1: --cnn_fifth_kernels~"choices([200, 400, 600])"
-cnn_kernelsize: 10 # @orion_step1: --cnn_kernelsize~"uniform(5, 10,discrete=True)"
-cnn_pool_size: 3 # @orion_step1: --cnn_pool_size~"uniform(1, 5,discrete=True)"
-dropout: 0.5 # @orion_step1: --dropout~"uniform(0.0, 0.5)"
+cnn_kernelsize: 10
+cnn_pool_size: 3
+dropout: 0.25 # @orion_step1: --dropout~"uniform(0.0, 0.5)"
 
 ##############################################################################################################
 # OTHER HPARS
