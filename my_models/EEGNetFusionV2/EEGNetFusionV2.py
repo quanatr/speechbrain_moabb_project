@@ -199,6 +199,15 @@ class EEGNetFusion(torch.nn.Module):
             ),
         )
 
+        # seprarable temporal batchnorm
+        self.branch_module_1.add_module(
+            f"sep_temp_bnorm_b1",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_sep_temporal_kernels,
+                affine=True,
+            ),
+        )
+
         # separable temporal activation
         self.branch_module_1.add_module(
             f"sep_temp_act_b1",
@@ -337,6 +346,15 @@ class EEGNetFusion(torch.nn.Module):
                 padding="valid",
                 bias=False,
                 swap=True,
+            ),
+        )
+
+        # seprarable temporal batchnorm
+        self.branch_module_2.add_module(
+            f"sep_temp_bnorm_b2",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_sep_temporal_kernels,
+                affine=True,
             ),
         )
 
@@ -481,6 +499,15 @@ class EEGNetFusion(torch.nn.Module):
             ),
         )
 
+        # seprarable temporal batchnorm
+        self.branch_module_3.add_module(
+            f"sep_temp_bnorm_b3",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_sep_temporal_kernels,
+                affine=True,
+            ),
+        )
+
         # separable temporal activation
         self.branch_module_3.add_module(
             f"sep_temp_act_b3",
@@ -622,6 +649,15 @@ class EEGNetFusion(torch.nn.Module):
             ),
         )
 
+        # seprarable temporal batchnorm
+        self.branch_module_4.add_module(
+            f"sep_temp_bnorm_b4",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_sep_temporal_kernels,
+                affine=True,
+            ),
+        )
+
         # separable temporal activation
         self.branch_module_4.add_module(
             f"sep_temp_act_b4",
@@ -760,6 +796,15 @@ class EEGNetFusion(torch.nn.Module):
                 padding="valid",
                 bias=False,
                 swap=True,
+            ),
+        )
+
+        # seprarable temporal batchnorm
+        self.branch_module_5.add_module(
+            f"sep_temp_bnorm_b5",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_sep_temporal_kernels,
+                affine=True,
             ),
         )
 

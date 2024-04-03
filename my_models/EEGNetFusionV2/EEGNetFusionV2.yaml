@@ -16,7 +16,7 @@ n_steps_channel_selection: 2 # tuned
 # checkpoints to average
 avg_models: 10 # tuned
 number_of_epochs: 480 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.005 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 4 # tuned
 
 # DATA AUGMENTATION
@@ -35,27 +35,27 @@ snr_white_delta: 19.1 # tuned
 
 # MODEL
 # branch 1
-cnn_temporal_kernels_b1: 37 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 64, discrete=True)"
-cnn_temporal_kernelsize_b1: 100 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256, discrete=True)"
-cnn_sep_temporal_kernelsize_b1: 58 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64, discrete=True)"
+cnn_temporal_kernels_b1: 8 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 64, discrete=True)"
+cnn_temporal_kernelsize_b1: 64 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256, discrete=True)"
+cnn_sep_temporal_kernelsize_b1: 8 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64, discrete=True)"
 # branch 2
-cnn_temporal_kernels_b2: 12 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b2: 170 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256, discrete=True)"
-cnn_sep_temporal_kernelsize_b2: 11 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b2: 16 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernelsize_b2: 80 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256, discrete=True)"
+cnn_sep_temporal_kernelsize_b2: 16 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
 # branch 3
-cnn_temporal_kernels_b3: 50 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b3: 179 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
-cnn_sep_temporal_kernelsize_b3: 40 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b3: 32 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernelsize_b3: 96 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b3: 32 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
 # branch 4
-cnn_temporal_kernels_b4: 20 # @orion_step1: --cnn_temporal_kernels_b4~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b4: 200 # @orion_step1: --cnn_temporal_kernelsize_b4~"uniform(24, 256,discrete=True)"
-cnn_sep_temporal_kernelsize_b4: 22 # @orion_step1: --cnn_sep_temporal_kernelsize_b4~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b4: 64 # @orion_step1: --cnn_temporal_kernels_b4~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernelsize_b4: 112 # @orion_step1: --cnn_temporal_kernelsize_b4~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b4: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b4~"uniform(4, 64,discrete=True)"
 # branch 5
-cnn_temporal_kernels_b5: 40 # @orion_step1: --cnn_temporal_kernels_b5~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b5: 240 # @orion_step1: --cnn_temporal_kernelsize_b5~"uniform(24, 256,discrete=True)"
-cnn_sep_temporal_kernelsize_b5: 30 # @orion_step1: --cnn_sep_temporal_kernelsize_b5~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b5: 128 # @orion_step1: --cnn_temporal_kernels_b5~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernelsize_b5: 128 # @orion_step1: --cnn_temporal_kernelsize_b5~"uniform(24, 256,discrete=True)"
+cnn_sep_temporal_kernelsize_b5: 128 # @orion_step1: --cnn_sep_temporal_kernelsize_b5~"uniform(4, 64,discrete=True)"
 # common parameters
-dropout: 0.4399 # @orion_step1: --dropout~"uniform(0, 0.5)" 
+dropout: 0.5 # @orion_step1: --dropout~"uniform(0, 0.5)" 
 
 ##############################################################################################################
 # OTHER HPARS
