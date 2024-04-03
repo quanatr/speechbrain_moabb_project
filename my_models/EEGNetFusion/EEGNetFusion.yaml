@@ -47,7 +47,7 @@ cnn_temporal_kernels_b3: 64 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4
 cnn_temporal_kernelsize_b3: 128 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
 cnn_sep_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
 # common parameters
-dropout: 0.5 # @orion_step1: --dropout~"uniform(0, 0.5)" 
+dropout: 0.1 # @orion_step1: --dropout~"uniform(0, 0.5)" 
 
 ##############################################################################################################
 # OTHER HPARS
