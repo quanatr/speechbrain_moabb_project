@@ -38,23 +38,8 @@ class MBShallowConvNet(torch.nn.Module):
         cnn_pool_stride=(15, 1),
         dense_n_neurons=4,
         dense_max_norm=0.5,
-        activation_type="elu",
     ):
         super().__init__()
-        if input_shape is None:
-            raise ValueError("Must specify input_shape")
-        if activation_type == "gelu":
-            activation = torch.nn.GELU()
-        elif activation_type == "elu":
-            activation = torch.nn.ELU()
-        elif activation_type == "relu":
-            activation = torch.nn.ReLU()
-        elif activation_type == "leaky_relu":
-            activation = torch.nn.LeakyReLU()
-        elif activation_type == "prelu":
-            activation = torch.nn.PReLU()
-        else:
-            raise ValueError("Wrong hidden activation function")
         self.default_sf = 128  # sampling rate of the original publication (Hz)
         T = input_shape[1]
         C = input_shape[2]
