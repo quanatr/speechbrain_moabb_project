@@ -139,7 +139,7 @@ add_noise_white: !new:speechbrain.augment.time_domain.AddNoise
     snr_low: !ref <snr_white_low>
     snr_high: !ref <snr_white_high>
 
-pipeline
+# pipeline
 repeat_augment: 1
 augment: !new:speechbrain.augment.augmenter.Augmenter
     parallel_augment: True
