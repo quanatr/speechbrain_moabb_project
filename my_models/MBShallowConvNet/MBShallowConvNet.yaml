@@ -2,7 +2,7 @@
 # DATASET HPARS
 # band-pass filtering cut-off frequencies
 fmin: 0. # tuned
-fmax: 124 # tuned
+fmax: 124.99 # tuned
 # tmin, tmax respect to stimulus onset that define the interval attribute of the dataset class
 # trial begins (0 s), cue (at 2 s, lasts 1.25 s long); each trial is 6 s long
 # dataset interval starts from 2
@@ -14,9 +14,9 @@ n_steps_channel_selection: 2 # tuned
 
 # TRAINING HPARS
 # checkpoints to average
-avg_models: 20 # tuned
+avg_models: 1 # tuned
 number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 1000, discrete=True)"
-lr: 0.0009 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+lr: 0.001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 6 # tuned
 
 # DATA AUGMENTATION
@@ -26,12 +26,12 @@ cutcat: !new:speechbrain.augment.time_domain.CutCat
     min_num_segments: 2
     max_num_segments: !ref <max_num_segments>
 # random amplitude gain between 0.5-1.5 uV (disabled when amp_delta=0.)
-amp_delta: 0.01742 # tuned
+amp_delta: 0.008079 # tuned
 # random shifts between -300 ms to 300 ms (disabled when shift_delta=0.)
-shift_delta_: 1 # tuned
+shift_delta_: 25 # tuned
 # injection of gaussian white noise
 snr_white_low: 15.0 # tuned
-snr_white_delta: 19.1 # tuned
+snr_white_delta: 5.49 # tuned
 
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
@@ -86,7 +86,7 @@ C: 22
 # - if test_with: 'best, we perform test with the best model (according to the metric specified in test_key)
 # The variable avg_models can be used to average the parameters of the last (or best) N saved models before testing.
 # This can have a regularization effect. If avg_models: 1, the last (or best) model is used directly.
-test_with: 'last' # 'last' or 'best'
+test_with: 'best' # 'last' or 'best'
 test_key: "acc" # Possible opts: "loss", "f1", "auc", "acc"
 
 # METRICS
