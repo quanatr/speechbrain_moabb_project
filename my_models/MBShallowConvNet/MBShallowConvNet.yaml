@@ -2,7 +2,7 @@
 # DATASET HPARS
 # band-pass filtering cut-off frequencies
 fmin: 0. # tuned
-fmax: 124. # tuned
+fmax: 124 # tuned
 # tmin, tmax respect to stimulus onset that define the interval attribute of the dataset class
 # trial begins (0 s), cue (at 2 s, lasts 1.25 s long); each trial is 6 s long
 # dataset interval starts from 2
@@ -14,9 +14,9 @@ n_steps_channel_selection: 2 # tuned
 
 # TRAINING HPARS
 # checkpoints to average
-avg_models: 10 # tuned
-number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+avg_models: 20 # tuned
+number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 1000, discrete=True)"
+lr: 0.0009 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 6 # tuned
 
 # DATA AUGMENTATION
@@ -36,17 +36,17 @@ snr_white_delta: 19.1 # tuned
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
 # branch 1
-cnn_temporal_kernels_b1: 5 # @orion_step1: --cnn_temporal_kernels_b1~"choices([4, 8])"
-cnn_temporal_kernelsize_b1: 16 # @orion_step1: --cnn_temporal_kernelsize_b1~"choices([5, 10, 15, 16, 32])"
+cnn_temporal_kernels_b1: 4 # @orion_step1: --cnn_temporal_kernels_b1~"choices([4, 8])"
+cnn_temporal_kernelsize_b1: 5 # @orion_step1: --cnn_temporal_kernelsize_b1~"choices([5, 10, 15, 16, 32])"
 dropout_b1: 0
 # branch 2
-cnn_temporal_kernels_b2: 15 # @orion_step1: --cnn_temporal_kernels_b2~"choices([8, 16])"
-cnn_temporal_kernelsize_b2: 32 # @orion_step1: --cnn_temporal_kernelsize_b2~"choices([15, 20, 25, 32, 64])"
-dropout_b2: 0
+cnn_temporal_kernels_b2: 8 # @orion_step1: --cnn_temporal_kernels_b2~"choices([8, 16])"
+cnn_temporal_kernelsize_b2: 15 # @orion_step1: --cnn_temporal_kernelsize_b2~"choices([15, 20, 25, 32, 64])"
+dropout_b2: 0.1
 # branch 3
-cnn_temporal_kernels_b3: 20 # @orion_step1: --cnn_temporal_kernels_b3~"choices([16, 32])"
-cnn_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_temporal_kernelsize_b3~"choices([20, 30, 35, 64, 128])"
-dropout_b3: 0
+cnn_temporal_kernels_b3: 16 # @orion_step1: --cnn_temporal_kernels_b3~"choices([16, 32])"
+cnn_temporal_kernelsize_b3: 20 # @orion_step1: --cnn_temporal_kernelsize_b3~"choices([20, 30, 35, 64, 128])"
+dropout_b3: 0.2
 # common params
 cnn_bnorm_momentum: 0.1
 cnn_bnorm_eps: 0.00001
@@ -104,6 +104,7 @@ n_train_examples: 100  # it will be replaced in the train script
 # Learning rate scheduling (cyclic learning rate is used here)
 max_lr: !ref <lr> # Upper bound of the cycle (max value of the lr)
 base_lr: 0.00000001 # Lower bound in the cycle (min value of the lr)
+batch_size: !ref 2 ** <batch_size_exponent>
 step_size_multiplier: 5 #from 2 to 8
 step_size: !apply:round
     - !ref <step_size_multiplier> * <n_train_examples> / <batch_size>
@@ -118,7 +119,6 @@ optimizer: !name:torch.optim.Adam
     lr: !ref <lr>
 epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter  # epoch counter
     limit: !ref <number_of_epochs>
-batch_size: !ref 2 ** <batch_size_exponent>
 valid_ratio: 0.2
 
 # DATA AUGMENTATION
@@ -139,21 +139,21 @@ add_noise_white: !new:speechbrain.augment.time_domain.AddNoise
     snr_low: !ref <snr_white_low>
     snr_high: !ref <snr_white_high>
 
-# pipeline
-# repeat_augment: 1
-# augment: !new:speechbrain.augment.augmenter.Augmenter
-#     parallel_augment: True
-#     concat_original: True
-#     parallel_augment_fixed_bs: True
-#     repeat_augment: !ref <repeat_augment>
-#     shuffle_augmentations: True
-#     min_augmentations: 4
-#     max_augmentations: 4
-#     augmentations: [
-#         !ref <cutcat>,
-#         !ref <rand_amp>,
-#         !ref <time_shift>,
-#         !ref <add_noise_white>]
+pipeline
+repeat_augment: 1
+augment: !new:speechbrain.augment.augmenter.Augmenter
+    parallel_augment: True
+    concat_original: True
+    parallel_augment_fixed_bs: True
+    repeat_augment: !ref <repeat_augment>
+    shuffle_augmentations: True
+    min_augmentations: 4
+    max_augmentations: 4
+    augmentations: [
+        !ref <cutcat>,
+        !ref <rand_amp>,
+        !ref <time_shift>,
+        !ref <add_noise_white>]
 
 # DATA NORMALIZATION
 dims_to_normalize: 1 # 1 (time) or 2 (EEG channels)
