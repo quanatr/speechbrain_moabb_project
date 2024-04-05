@@ -113,16 +113,16 @@ class MBShallowConvNet(torch.nn.Module):
             Log(),
         )
 
-        # flatten
-        self.branch_module_1.add_module(
-            "flatten_b1",
-            torch.nn.Flatten(),
-        )
-
         # dropout
         self.branch_module_1.add_module(
             "dropout_b1",
             torch.nn.Dropout(p=dropout_b1),
+        )
+
+        # flatten
+        self.branch_module_1.add_module(
+            "flatten_b1",
+            torch.nn.Flatten(),
         )
 
         #####################################################
@@ -194,16 +194,16 @@ class MBShallowConvNet(torch.nn.Module):
             Log(),
         )
 
-        # flatten
-        self.branch_module_2.add_module(
-            "flatten_b2",
-            torch.nn.Flatten(),
-        )
-
         # dropout
         self.branch_module_2.add_module(
             "dropout_b2",
             torch.nn.Dropout(p=dropout_b2),
+        )
+
+        # flatten
+        self.branch_module_2.add_module(
+            "flatten_b2",
+            torch.nn.Flatten(),
         )
 
         #####################################################
@@ -275,16 +275,16 @@ class MBShallowConvNet(torch.nn.Module):
             Log(),
         )
 
-        # flatten
-        self.branch_module_3.add_module(
-            "flatten_b3",
-            torch.nn.Flatten(),
-        )
-
         # dropout
         self.branch_module_3.add_module(
             "dropout_b3",
             torch.nn.Dropout(p=dropout_b3),
+        )
+
+        # flatten
+        self.branch_module_3.add_module(
+            "flatten_b3",
+            torch.nn.Flatten(),
         )
 
         #####################################################
