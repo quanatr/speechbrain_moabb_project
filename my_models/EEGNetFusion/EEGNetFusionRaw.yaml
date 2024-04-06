@@ -1,8 +1,8 @@
 # TUNED HPARS
 # DATASET HPARS
 # band-pass filtering cut-off frequencies
-fmin: 0.13 # tuned
-fmax: 46.0 # tuned
+fmin: 0. # tuned
+fmax: 124.9999 # tuned
 # tmin, tmax respect to stimulus onset that define the interval attribute of the dataset class
 # trial begins (0 s), cue (2 s, 1.25 s long); each trial is 6 s long
 # dataset interval starts from 2
@@ -14,40 +14,37 @@ n_steps_channel_selection: 2 # tuned
 
 # TRAINING HPARS
 # checkpoints to average
-avg_models: 10 # tuned
-number_of_epochs: 350 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
-batch_size_exponent: 4 # tuned
+avg_models: 1 # tuned
+number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
+lr: 0.0009 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+batch_size_exponent: 6 # tuned
 
-# DATA AUGMENTATION
-# cutcat (disabled when min_num_segments=max_num_segments=1)
-max_num_segments: 3 # tuned
-cutcat: !new:speechbrain.augment.time_domain.CutCat
-    min_num_segments: 2
-    max_num_segments: !ref <max_num_segments>
-# random amplitude gain between 0.5-1.5 uV (disabled when amp_delta=0.)
-amp_delta: 0.01742 # tuned
-# random shifts between -300 ms to 300 ms (disabled when shift_delta=0.)
-shift_delta_: 1 # tuned
-# injection of gaussian white noise
-snr_white_low: 15.0 # tuned
-snr_white_delta: 19.1 # tuned
-
-# #MODEL
-# # branch 1
-# cnn_temporal_kernels_b1: 30 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b1: 33 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b1: 16 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64,discrete=True)"
-# # branch 2
-# cnn_temporal_kernels_b2: 40 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b2: 128 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b2: 32 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
-# # branch 3
-# cnn_temporal_kernels_b3: 60 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 100,discrete=True)"
-# cnn_temporal_kernelsize_b3: 256 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
-# cnn_sep_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
-# # common parameters
-# dropout: 0.5 # @orion_step1: --dropout~"uniform(0, 0.5)" 
+# MODEL
+# branch 1
+cnn_temporal_kernels_b1: 4
+cnn_temporal_kernelsize_b1: 16
+cnn_sep_temporal_kernelsize_b1: 8
+dropout_b1 : 0
+# branch 2
+cnn_temporal_kernels_b2: 8
+cnn_temporal_kernelsize_b2: 32
+cnn_sep_temporal_kernelsize_b2: 16
+dropout_b2 : 0.1
+# branch 3
+cnn_temporal_kernels_b3: 16
+cnn_temporal_kernelsize_b3: 64
+cnn_sep_temporal_kernelsize_b3: 32
+dropout_b3 : 0.2
+# common parameters
+cnn_depth_multiplier: 2
+cnn_depth_max_norm: 1
+cnn_depth_pool_size: 4
+cnn_sep_temporal_multiplier: 1
+cnn_sep_temporal_pool_size: 8
+cnn_pool_type: "avg"
+dense_n_neurons: 4
+dense_max_norm: 0.25
+activation_type: 'elu'
 
 ##############################################################################################################
 # OTHER HPARS
@@ -68,7 +65,7 @@ target_subject_idx: !PLACEHOLDER
 target_session_idx: !PLACEHOLDER
 events_to_load: null # all events will be loaded
 original_sample_rate: 250 # Original sampling rate provided by dataset authors
-sample_rate: 125 # Target sampling rate (Hz)
+sample_rate: 250 # Target sampling rate (Hz)
 n_classes: 4
 T: !apply:math.ceil
     - !ref <sample_rate> * (<tmax> - <tmin>)
@@ -78,7 +75,7 @@ C: 22
 # - if test_with: 'best, we perform test with the best model (according to the metric specified in test_key)
 # The variable avg_models can be used to average the parameters of the last (or best) N saved models before testing.
 # This can have a regularization effect. If avg_models: 1, the last (or best) model is used directly.
-test_with: 'last' # 'last' or 'best'
+test_with: 'best' # 'last' or 'best'
 test_key: "acc" # Possible opts: "loss", "f1", "auc", "acc"
 
 # METRICS
@@ -113,40 +110,6 @@ epoch_counter: !new:speechbrain.utils.epoch_loop.EpochCounter  # epoch counter
 batch_size: !ref 2 ** <batch_size_exponent>
 valid_ratio: 0.2
 
-# DATA AUGMENTATION
-rand_amp: !new:speechbrain.augment.time_domain.RandAmp
-    amp_low: !ref 1 - <amp_delta>
-    amp_high: !ref 1 + <amp_delta>
-shift_delta: !ref 1e-2 * <shift_delta_> # 0.250 # 0.-0.25 with steps of 0.01
-min_shift: !apply:math.floor
-    - !ref 0 - <sample_rate> * <shift_delta>
-max_shift: !apply:math.floor
-    - !ref 0 + <sample_rate> * <shift_delta>
-time_shift: !new:speechbrain.augment.freq_domain.RandomShift
-    min_shift: !ref <min_shift>
-    max_shift: !ref <max_shift>
-    dim: 1
-snr_white_high: !ref <snr_white_low> + <snr_white_delta>
-add_noise_white: !new:speechbrain.augment.time_domain.AddNoise
-    snr_low: !ref <snr_white_low>
-    snr_high: !ref <snr_white_high>
-
-# pipeline
-repeat_augment: 2
-augment: !new:speechbrain.augment.augmenter.Augmenter
-    parallel_augment: True
-    concat_original: True
-    parallel_augment_fixed_bs: True
-    repeat_augment: !ref <repeat_augment>
-    shuffle_augmentations: True
-    min_augmentations: 4
-    max_augmentations: 4
-    augmentations: [
-        !ref <cutcat>,
-        !ref <rand_amp>,
-        !ref <time_shift>,
-        !ref <add_noise_white>]
-
 # DATA NORMALIZATION
 dims_to_normalize: 1 # 1 (time) or 2 (EEG channels)
 normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
@@ -154,32 +117,6 @@ normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
 
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
-# branch 1
-cnn_temporal_kernels_b1: 8
-cnn_temporal_kernelsize_b1: 32
-cnn_sep_temporal_kernelsize_b1: 16
-
-# branch 2
-cnn_temporal_kernels_b2: 16
-cnn_temporal_kernelsize_b2: 64
-cnn_sep_temporal_kernelsize_b2: 32
-
-# branch 3
-cnn_temporal_kernels_b3: 32
-cnn_temporal_kernelsize_b3: 128
-cnn_sep_temporal_kernelsize_b3: 64
-
-# common parameters
-cnn_depth_multiplier: 2
-cnn_depth_max_norm: 1
-cnn_depth_pool_size: 4
-cnn_sep_temporal_multiplier: 1
-cnn_sep_temporal_pool_size: 8
-cnn_pool_type: "avg"
-dense_n_neurons: 4
-dense_max_norm: 0.25
-dropout: 0.5
-activation_type: 'elu'
 
 model: !new:models.MyModel.EEGNetFusion
     input_shape: !ref <input_shape>
@@ -187,14 +124,17 @@ model: !new:models.MyModel.EEGNetFusion
     cnn_temporal_kernels_b1: !ref <cnn_temporal_kernels_b1>
     cnn_temporal_kernelsize_b1: [!ref <cnn_temporal_kernelsize_b1>, 1]
     cnn_sep_temporal_kernelsize_b1: [!ref <cnn_sep_temporal_kernelsize_b1>, 1]
+    dropout_b1: !ref <dropout_b1>
     # branch 2
     cnn_temporal_kernels_b2: !ref <cnn_temporal_kernels_b2>
     cnn_temporal_kernelsize_b2: [!ref <cnn_temporal_kernelsize_b2>, 1]
     cnn_sep_temporal_kernelsize_b2: [!ref <cnn_sep_temporal_kernelsize_b2>, 1]
+    dropout_b2: !ref <dropout_b2>
     # branch 3
     cnn_temporal_kernels_b3: !ref <cnn_temporal_kernels_b3>
     cnn_temporal_kernelsize_b3: [!ref <cnn_temporal_kernelsize_b3>, 1]
     cnn_sep_temporal_kernelsize_b3: [!ref <cnn_sep_temporal_kernelsize_b3>, 1]
+    dropout_b3: !ref <dropout_b3>
     # common parameters
     cnn_depth_multiplier: !ref <cnn_depth_multiplier>
     cnn_depth_max_norm: !ref <cnn_depth_max_norm>
@@ -204,5 +144,4 @@ model: !new:models.MyModel.EEGNetFusion
     cnn_pool_type: !ref <cnn_pool_type>
     dense_n_neurons: !ref <dense_n_neurons>
     dense_max_norm: !ref <dense_max_norm>
-    dropout: !ref <dropout>
     activation_type: !ref <activation_type>
