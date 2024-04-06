@@ -14,10 +14,10 @@ n_steps_channel_selection: 2 # tuned
 
 # TRAINING HPARS
 # checkpoints to average
-avg_models: 10 # tuned
-number_of_epochs: 350 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
-lr: 0.0001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
-batch_size_exponent: 4 # tuned
+avg_models: 1 # tuned
+number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 600, discrete=True)"
+lr: 0.0009 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+batch_size_exponent: 6 # tuned
 
 # DATA AUGMENTATION
 # cutcat (disabled when min_num_segments=max_num_segments=1)
@@ -89,7 +89,7 @@ C: 22
 # - if test_with: 'best, we perform test with the best model (according to the metric specified in test_key)
 # The variable avg_models can be used to average the parameters of the last (or best) N saved models before testing.
 # This can have a regularization effect. If avg_models: 1, the last (or best) model is used directly.
-test_with: 'last' # 'last' or 'best'
+test_with: 'best' # 'last' or 'best'
 test_key: "acc" # Possible opts: "loss", "f1", "auc", "acc"
 
 # METRICS
