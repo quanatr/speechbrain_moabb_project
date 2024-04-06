@@ -36,17 +36,17 @@ snr_white_delta: 19.1 # tuned
 # MODEL
 # branch 1
 cnn_temporal_kernels_b1: 4
-cnn_temporal_kernelsize_b1: 32
+cnn_temporal_kernelsize_b1: 16
 cnn_sep_temporal_kernelsize_b1: 16
 dropout_b1 : 0
 # branch 2
 cnn_temporal_kernels_b2: 8
-cnn_temporal_kernelsize_b2: 64
+cnn_temporal_kernelsize_b2: 32
 cnn_sep_temporal_kernelsize_b2: 16
 dropout_b2 : 0.1
 # branch 3
 cnn_temporal_kernels_b3: 16
-cnn_temporal_kernelsize_b3: 128
+cnn_temporal_kernelsize_b3: 64
 cnn_sep_temporal_kernelsize_b3: 16
 dropout_b3 : 0.2
 # common parameters
