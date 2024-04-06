@@ -35,19 +35,30 @@ snr_white_delta: 19.1 # tuned
 
 # MODEL
 # branch 1
-cnn_temporal_kernels_b1: 16 # @orion_step1: --cnn_temporal_kernels_b1~"uniform(4, 64, discrete=True)"
-cnn_temporal_kernelsize_b1: 32 # @orion_step1: --cnn_temporal_kernelsize_b1~"uniform(24, 256, discrete=True)"
-cnn_sep_temporal_kernelsize_b1: 16 # @orion_step1: --cnn_sep_temporal_kernelsize_b1~"uniform(4, 64, discrete=True)"
+cnn_temporal_kernels_b1: 4
+cnn_temporal_kernelsize_b1: 16
+cnn_sep_temporal_kernelsize_b1: 8
+dropout_b1 : 0
 # branch 2
-cnn_temporal_kernels_b2: 32 # @orion_step1: --cnn_temporal_kernels_b2~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b2: 64 # @orion_step1: --cnn_temporal_kernelsize_b2~"uniform(24, 256, discrete=True)"
-cnn_sep_temporal_kernelsize_b2: 32 # @orion_step1: --cnn_sep_temporal_kernelsize_b2~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b2: 8
+cnn_temporal_kernelsize_b2: 32
+cnn_sep_temporal_kernelsize_b2: 16
+dropout_b2 : 0.1
 # branch 3
-cnn_temporal_kernels_b3: 64 # @orion_step1: --cnn_temporal_kernels_b3~"uniform(4, 64,discrete=True)"
-cnn_temporal_kernelsize_b3: 128 # @orion_step1: --cnn_temporal_kernelsize_b3~"uniform(24, 256,discrete=True)"
-cnn_sep_temporal_kernelsize_b3: 64 # @orion_step1: --cnn_sep_temporal_kernelsize_b3~"uniform(4, 64,discrete=True)"
+cnn_temporal_kernels_b3: 16
+cnn_temporal_kernelsize_b3: 64
+cnn_sep_temporal_kernelsize_b3: 32
+dropout_b3 : 0.2
 # common parameters
-dropout: 0.008464 # @orion_step1: --dropout~"uniform(0, 0.5)" 
+cnn_depth_multiplier: 2
+cnn_depth_max_norm: 1
+cnn_depth_pool_size: 4
+cnn_sep_temporal_multiplier: 1
+cnn_sep_temporal_pool_size: 8
+cnn_pool_type: "avg"
+dense_n_neurons: 4
+dense_max_norm: 0.25
+activation_type: 'elu'
 
 ##############################################################################################################
 # OTHER HPARS
@@ -154,16 +165,6 @@ normalize: !name:speechbrain.processing.signal_processing.mean_std_norm
 
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
-# common parameters
-cnn_depth_multiplier: 2
-cnn_depth_max_norm: 1
-cnn_depth_pool_size: 4
-cnn_sep_temporal_multiplier: 1
-cnn_sep_temporal_pool_size: 8
-cnn_pool_type: "avg"
-dense_n_neurons: 4
-dense_max_norm: 0.25
-activation_type: 'elu'
 
 model: !new:models.MyModel.EEGNetFusion
     input_shape: !ref <input_shape>
@@ -171,14 +172,17 @@ model: !new:models.MyModel.EEGNetFusion
     cnn_temporal_kernels_b1: !ref <cnn_temporal_kernels_b1>
     cnn_temporal_kernelsize_b1: [!ref <cnn_temporal_kernelsize_b1>, 1]
     cnn_sep_temporal_kernelsize_b1: [!ref <cnn_sep_temporal_kernelsize_b1>, 1]
+    dropout_b1: !ref <dropout_b1>
     # branch 2
     cnn_temporal_kernels_b2: !ref <cnn_temporal_kernels_b2>
     cnn_temporal_kernelsize_b2: [!ref <cnn_temporal_kernelsize_b2>, 1]
     cnn_sep_temporal_kernelsize_b2: [!ref <cnn_sep_temporal_kernelsize_b2>, 1]
+    dropout_b2: !ref <dropout_b2>
     # branch 3
     cnn_temporal_kernels_b3: !ref <cnn_temporal_kernels_b3>
     cnn_temporal_kernelsize_b3: [!ref <cnn_temporal_kernelsize_b3>, 1]
     cnn_sep_temporal_kernelsize_b3: [!ref <cnn_sep_temporal_kernelsize_b3>, 1]
+    dropout_b3: !ref <dropout_b3>
     # common parameters
     cnn_depth_multiplier: !ref <cnn_depth_multiplier>
     cnn_depth_max_norm: !ref <cnn_depth_max_norm>
@@ -188,5 +192,4 @@ model: !new:models.MyModel.EEGNetFusion
     cnn_pool_type: !ref <cnn_pool_type>
     dense_n_neurons: !ref <dense_n_neurons>
     dense_max_norm: !ref <dense_max_norm>
-    dropout: !ref <dropout>
     activation_type: !ref <activation_type>

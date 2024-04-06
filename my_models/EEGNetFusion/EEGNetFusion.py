@@ -9,29 +9,32 @@ class EEGNetFusion(torch.nn.Module):
 
         # branch 1
         cnn_temporal_kernels_b1=4,
-        cnn_temporal_kernelsize_b1=(64, 1),
+        cnn_temporal_kernelsize_b1=(16, 1),
         cnn_sep_temporal_kernelsize_b1=(8, 1),
+        dropout_b1 = 0,
 
         # branch 2
         cnn_temporal_kernels_b2=8,
-        cnn_temporal_kernelsize_b2=(128, 1),
+        cnn_temporal_kernelsize_b2=(32, 1),
         cnn_sep_temporal_kernelsize_b2=(16, 1),
+        dropout_b2 = 0.1,
 
         # branch 3
         cnn_temporal_kernels_b3=16,
-        cnn_temporal_kernelsize_b3=(256, 1),
+        cnn_temporal_kernelsize_b3=(64, 1),
         cnn_sep_temporal_kernelsize_b3=(32, 1),
+        dropout_b3 = 0.2,
 
         # common parameters
         cnn_depth_multiplier=2,
         cnn_depth_max_norm=1,
         cnn_depth_pool_size=(4, 1),
         cnn_sep_temporal_multiplier=1,
+        # cnn_sep_temporal_kernels = 16,
         cnn_sep_temporal_pool_size=(8, 1),
         cnn_pool_type="avg",
         dense_n_neurons=4,
         dense_max_norm=0.25,
-        dropout=0.25,
         activation_type='elu',
     ):
         super().__init__()
@@ -53,24 +56,6 @@ class EEGNetFusion(torch.nn.Module):
         T = input_shape[1]
         C = input_shape[2]
 
-        self.cnn_temporal_kernel_counts = {
-            "b1": cnn_temporal_kernels_b1,
-            "b2": cnn_temporal_kernels_b2,
-            "b3": cnn_temporal_kernels_b3,
-        }
-
-        self.cnn_temporal_kernelsizes = {
-            "b1": cnn_temporal_kernelsize_b1,
-            "b2": cnn_temporal_kernelsize_b2,
-            "b3": cnn_temporal_kernelsize_b3,
-        }
-
-        self.cnn_sep_temporal_kernelsizes = {
-            "b1": cnn_sep_temporal_kernelsize_b1,
-            "b2": cnn_sep_temporal_kernelsize_b2,
-            "b3": cnn_sep_temporal_kernelsize_b3,
-        }
-
         #####################################################
         # BRANCH MODULE 1
         #####################################################
@@ -81,8 +66,8 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_conv_b1",
             sb.nnet.CNN.Conv2d(
                 in_channels=1,
-                out_channels=self.cnn_temporal_kernel_counts["b1"],
-                kernel_size=self.cnn_temporal_kernelsizes["b1"],
+                out_channels=cnn_temporal_kernels_b1,
+                kernel_size=cnn_temporal_kernelsize_b1,
                 padding="same",
                 padding_mode="constant",
                 bias=False,
@@ -94,23 +79,24 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_1.add_module(
             f"temp_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=self.cnn_temporal_kernel_counts["b1"],
+                input_size=cnn_temporal_kernels_b1,
                 affine=True,
             ),
         )
-        
+
         # num of spatial depthwise filters
-        cnn_depth_kernels = (
-            self.cnn_temporal_kernel_counts["b1"] * cnn_depth_multiplier
+        cnn_depth_kernels_b1 = (
+            cnn_temporal_kernels_b1 * cnn_depth_multiplier
         )
 
         # depthwise
         self.branch_module_1.add_module(
             f"depth_conv_b1",
             sb.nnet.CNN.Conv2d(
-                in_channels=self.cnn_temporal_kernel_counts["b1"],
-                out_channels=cnn_depth_kernels,
+                in_channels=cnn_temporal_kernels_b1,
+                out_channels=cnn_depth_kernels_b1,
                 kernel_size=(1, C),
+                groups=cnn_temporal_kernels_b1,
                 padding="valid",
                 bias=False,
                 max_norm=cnn_depth_max_norm,
@@ -122,7 +108,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_1.add_module(
             f"depth_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_depth_kernels,
+                input_size=cnn_depth_kernels_b1,
                 affine=True,
             ),
         )
@@ -147,24 +133,21 @@ class EEGNetFusion(torch.nn.Module):
         # depthwise dropout
         self.branch_module_1.add_module(
             f"depth_dropout_b1",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b1),
         )
 
         # num of separable temporal filters
-        cnn_sep_temporal_kernels = (
-            cnn_depth_kernels * cnn_sep_temporal_multiplier
-        )
+        cnn_sep_temporal_kernels_b1 = cnn_depth_kernels_b1 * cnn_sep_temporal_multiplier
 
         # separable temporal (depthwise_component)
         self.branch_module_1.add_module(
             f"sep_temp_depth_conv_b1",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_depth_kernels,
-                out_channels=cnn_sep_temporal_kernels,
-                kernel_size=self.cnn_sep_temporal_kernelsizes["b1"],
-                groups=cnn_depth_kernels,
-                padding="same",
-                padding_mode="constant",
+                in_channels=cnn_depth_kernels_b1,
+                out_channels=cnn_sep_temporal_kernels_b1,
+                kernel_size=cnn_sep_temporal_kernelsize_b1,
+                groups=cnn_depth_kernels_b1,
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -174,10 +157,11 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_1.add_module(
             f"sep_temp_point_conv_b1",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_sep_temporal_kernels,
-                out_channels=cnn_sep_temporal_kernels,
+                in_channels=cnn_sep_temporal_kernels_b1,
+                out_channels=cnn_sep_temporal_kernels_b1,
                 kernel_size=(1, 1),
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -187,7 +171,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_1.add_module(
             f"sep_temp_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_sep_temporal_kernels,
+                input_size=cnn_sep_temporal_kernels_b1,
                 affine=True,
             ),
         )
@@ -212,7 +196,7 @@ class EEGNetFusion(torch.nn.Module):
         # separable temporal dropout
         self.branch_module_1.add_module(
             f"sep_temp_dropout_b1",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b1),
         )
 
         # flatten
@@ -231,8 +215,8 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_conv_b2",
             sb.nnet.CNN.Conv2d(
                 in_channels=1,
-                out_channels=self.cnn_temporal_kernel_counts["b2"],
-                kernel_size=self.cnn_temporal_kernelsizes["b2"],
+                out_channels=cnn_temporal_kernels_b2,
+                kernel_size=cnn_temporal_kernelsize_b2,
                 padding="same",
                 padding_mode="constant",
                 bias=False,
@@ -244,23 +228,24 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_2.add_module(
             f"temp_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=self.cnn_temporal_kernel_counts["b2"],
+                input_size=cnn_temporal_kernels_b2,
                 affine=True,
             ),
         )
 
         # num of spatial depthwise filters
-        cnn_depth_kernels = (
-            self.cnn_temporal_kernel_counts["b2"] * cnn_depth_multiplier
+        cnn_depth_kernels_b2 = (
+            cnn_temporal_kernels_b2 * cnn_depth_multiplier
         )
 
         # depthwise
         self.branch_module_2.add_module(
             f"depth_conv_b2",
             sb.nnet.CNN.Conv2d(
-                in_channels=self.cnn_temporal_kernel_counts["b2"],
-                out_channels=cnn_depth_kernels,
+                in_channels=cnn_temporal_kernels_b2,
+                out_channels=cnn_depth_kernels_b2,
                 kernel_size=(1, C),
+                groups=cnn_temporal_kernels_b2,
                 padding="valid",
                 bias=False,
                 max_norm=cnn_depth_max_norm,
@@ -272,7 +257,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_2.add_module(
             f"depth_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_depth_kernels,
+                input_size=cnn_depth_kernels_b2,
                 affine=True,
             ),
         )
@@ -297,24 +282,21 @@ class EEGNetFusion(torch.nn.Module):
         # depthwise dropout
         self.branch_module_2.add_module(
             f"depth_dropout_b2",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b2),
         )
 
         # num of separable temporal filters
-        cnn_sep_temporal_kernels = (
-            cnn_depth_kernels * cnn_sep_temporal_multiplier
-        )
+        cnn_sep_temporal_kernels_b2 = cnn_depth_kernels_b2 * cnn_sep_temporal_multiplier
 
         # separable temporal (depthwise_component)
         self.branch_module_2.add_module(
             f"sep_temp_depth_conv_b2",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_depth_kernels,
-                out_channels=cnn_sep_temporal_kernels,
-                kernel_size=self.cnn_sep_temporal_kernelsizes["b2"],
-                groups=cnn_depth_kernels,
-                padding="same",
-                padding_mode="constant",
+                in_channels=cnn_depth_kernels_b2,
+                out_channels=cnn_sep_temporal_kernels_b2,
+                kernel_size=cnn_sep_temporal_kernelsize_b2,
+                groups=cnn_depth_kernels_b2,
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -324,10 +306,11 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_2.add_module(
             f"sep_temp_point_conv_b2",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_sep_temporal_kernels,
-                out_channels=cnn_sep_temporal_kernels,
+                in_channels=cnn_sep_temporal_kernels_b2,
+                out_channels=cnn_sep_temporal_kernels_b2,
                 kernel_size=(1, 1),
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -337,7 +320,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_2.add_module(
             f"sep_temp_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_sep_temporal_kernels,
+                input_size=cnn_sep_temporal_kernels_b2,
                 affine=True,
             ),
         )
@@ -362,7 +345,7 @@ class EEGNetFusion(torch.nn.Module):
         # separable temporal dropout
         self.branch_module_2.add_module(
             f"sep_temp_dropout_b2",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b2),
         )
 
         # flatten
@@ -381,8 +364,8 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_conv_b3",
             sb.nnet.CNN.Conv2d(
                 in_channels=1,
-                out_channels=self.cnn_temporal_kernel_counts["b3"],
-                kernel_size=self.cnn_temporal_kernelsizes["b3"],
+                out_channels=cnn_temporal_kernels_b3,
+                kernel_size=cnn_temporal_kernelsize_b3,
                 padding="same",
                 padding_mode="constant",
                 bias=False,
@@ -394,23 +377,24 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_3.add_module(
             f"temp_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=self.cnn_temporal_kernel_counts["b3"],
+                input_size=cnn_temporal_kernels_b3,
                 affine=True,
             ),
         )
 
         # num of spatial depthwise filters
-        cnn_depth_kernels = (
-            self.cnn_temporal_kernel_counts["b3"] * cnn_depth_multiplier
+        cnn_depth_kernels_b3 = (
+            cnn_temporal_kernels_b3 * cnn_depth_multiplier
         )
 
         # depthwise
         self.branch_module_3.add_module(
             f"depth_conv_b3",
             sb.nnet.CNN.Conv2d(
-                in_channels=self.cnn_temporal_kernel_counts["b3"],
-                out_channels=cnn_depth_kernels,
+                in_channels=cnn_temporal_kernels_b3,
+                out_channels=cnn_depth_kernels_b3,
                 kernel_size=(1, C),
+                groups=cnn_temporal_kernels_b3,
                 padding="valid",
                 bias=False,
                 max_norm=cnn_depth_max_norm,
@@ -422,7 +406,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_3.add_module(
             f"depth_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_depth_kernels,
+                input_size=cnn_depth_kernels_b3,
                 affine=True,
             ),
         )
@@ -447,24 +431,21 @@ class EEGNetFusion(torch.nn.Module):
         # depthwise dropout
         self.branch_module_3.add_module(
             f"depth_dropout_b3",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b3),
         )
 
         # num of separable temporal filters
-        cnn_sep_temporal_kernels = (
-            cnn_depth_kernels * cnn_sep_temporal_multiplier
-        )
+        cnn_sep_temporal_kernels_b3 = cnn_depth_kernels_b3 * cnn_sep_temporal_multiplier
 
         # separable temporal (depthwise_component)
         self.branch_module_3.add_module(
             f"sep_temp_depth_conv_b3",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_depth_kernels,
-                out_channels=cnn_sep_temporal_kernels,
-                kernel_size=self.cnn_sep_temporal_kernelsizes["b3"],
-                groups=cnn_depth_kernels,
-                padding="same",
-                padding_mode="constant",
+                in_channels=cnn_depth_kernels_b3,
+                out_channels=cnn_sep_temporal_kernels_b3,
+                kernel_size=cnn_sep_temporal_kernelsize_b3,
+                groups=cnn_depth_kernels_b3,
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -474,10 +455,11 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_3.add_module(
             f"sep_temp_point_conv_b3",
             sb.nnet.CNN.Conv2d(
-                in_channels=cnn_sep_temporal_kernels,
-                out_channels=cnn_sep_temporal_kernels,
+                in_channels=cnn_sep_temporal_kernels_b3,
+                out_channels=cnn_sep_temporal_kernels_b3,
                 kernel_size=(1, 1),
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -487,7 +469,7 @@ class EEGNetFusion(torch.nn.Module):
         self.branch_module_3.add_module(
             f"sep_temp_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_sep_temporal_kernels,
+                input_size=cnn_sep_temporal_kernels_b3,
                 affine=True,
             ),
         )
@@ -512,7 +494,7 @@ class EEGNetFusion(torch.nn.Module):
         # separable temporal dropout
         self.branch_module_3.add_module(
             f"sep_temp_dropout_b3",
-            torch.nn.Dropout(p=dropout),
+            torch.nn.Dropout(p=dropout_b3),
         )
 
         # flatten
