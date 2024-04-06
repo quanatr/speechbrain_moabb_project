@@ -1,8 +1,8 @@
 # TUNED HPARS
 # DATASET HPARS
 # band-pass filtering cut-off frequencies
-fmin: 0. # tuned
-fmax: 124.99 # tuned
+fmin: 0.13 # tuned
+fmax: 46.0 # tuned
 # tmin, tmax respect to stimulus onset that define the interval attribute of the dataset class
 # trial begins (0 s), cue (at 2 s, lasts 1.25 s long); each trial is 6 s long
 # dataset interval starts from 2
@@ -16,22 +16,22 @@ n_steps_channel_selection: 2 # tuned
 # checkpoints to average
 avg_models: 1 # tuned
 number_of_epochs: 1000 # @orion_step1: --number_of_epochs~"uniform(250, 1000, discrete=True)"
-lr: 0.001 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
+lr: 0.0009 # @orion_step1: --lr~"choices([0.01, 0.005, 0.001, 0.0005, 0.0001])"
 batch_size_exponent: 6 # tuned
 
-# # DATA AUGMENTATION
-# # cutcat (disabled when min_num_segments=max_num_segments=1)
-# max_num_segments: 3 # tuned
-# cutcat: !new:speechbrain.augment.time_domain.CutCat
-#     min_num_segments: 2
-#     max_num_segments: !ref <max_num_segments>
-# # random amplitude gain between 0.5-1.5 uV (disabled when amp_delta=0.)
-# amp_delta: 0.008079 # tuned
-# # random shifts between -300 ms to 300 ms (disabled when shift_delta=0.)
-# shift_delta_: 25 # tuned
-# # injection of gaussian white noise
-# snr_white_low: 15.0 # tuned
-# snr_white_delta: 5.49 # tuned
+# DATA AUGMENTATION
+# cutcat (disabled when min_num_segments=max_num_segments=1)
+max_num_segments: 3 # tuned
+cutcat: !new:speechbrain.augment.time_domain.CutCat
+    min_num_segments: 2
+    max_num_segments: !ref <max_num_segments>
+# random amplitude gain between 0.5-1.5 uV (disabled when amp_delta=0.)
+amp_delta: 0.008079 # tuned
+# random shifts between -300 ms to 300 ms (disabled when shift_delta=0.)
+shift_delta_: 25 # tuned
+# injection of gaussian white noise
+snr_white_low: 15.0 # tuned
+snr_white_delta: 5.49 # tuned
 
 # MODEL
 input_shape: [null, !ref <T>, !ref <C>, null]
@@ -76,7 +76,7 @@ target_subject_idx: !PLACEHOLDER
 target_session_idx: !PLACEHOLDER
 events_to_load: null # all events will be loaded
 original_sample_rate: 250 # Original sampling rate provided by dataset authors
-sample_rate: 250 # Target sampling rate (Hz)
+sample_rate: 125 # Target sampling rate (Hz)
 n_classes: 4
 T: !apply:math.ceil
     - !ref <sample_rate> * (<tmax> - <tmin>)

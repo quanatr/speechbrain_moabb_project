@@ -64,6 +64,15 @@ class MBShallowConvNet(torch.nn.Module):
             ),
         )
 
+        # temporal batchnorm
+        self.branch_module_1.add_module(
+            f"temp_bnorm_b1",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_temporal_kernels_b1,
+                affine=True,
+            ),
+        )
+
         # spatial
         cnn_spatial_kernels_b1 = cnn_temporal_kernels_b1
 
@@ -145,6 +154,15 @@ class MBShallowConvNet(torch.nn.Module):
             ),
         )
 
+        # temporal batchnorm
+        self.branch_module_2.add_module(
+            f"temp_bnorm_b2",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_temporal_kernels_b2,
+                affine=True,
+            ),
+        )    
+
         # spatial
         cnn_spatial_kernels_b2 = cnn_temporal_kernels_b2
 
@@ -223,6 +241,15 @@ class MBShallowConvNet(torch.nn.Module):
                 bias=False,
                 max_norm=cnn_max_norm,
                 swap=True,
+            ),
+        )
+
+        # temporal batchnorm
+        self.branch_module_3.add_module(
+            f"temp_bnorm_b3",
+            sb.nnet.normalization.BatchNorm2d(
+                input_size=cnn_temporal_kernels_b3,
+                affine=True,
             ),
         )
 
