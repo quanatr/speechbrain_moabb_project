@@ -80,6 +80,7 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_temporal_kernels_b1,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -109,6 +110,7 @@ class EEGNetFusion(torch.nn.Module):
             f"depth_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_depth_kernels_b1,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -149,7 +151,8 @@ class EEGNetFusion(torch.nn.Module):
                 out_channels=cnn_depth_kernels_b1,
                 kernel_size=cnn_sep_temporal_kernelsize_b1,
                 groups=cnn_depth_kernels_b1,
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -162,8 +165,7 @@ class EEGNetFusion(torch.nn.Module):
                 in_channels=cnn_depth_kernels_b1,
                 out_channels=cnn_sep_temporal_kernels_b1,
                 kernel_size=(1, 1),
-                padding="same",
-                padding_mode="constant",
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -174,6 +176,7 @@ class EEGNetFusion(torch.nn.Module):
             f"sep_temp_bnorm_b1",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_sep_temporal_kernels_b1,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -231,6 +234,7 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_temporal_kernels_b2,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -260,6 +264,7 @@ class EEGNetFusion(torch.nn.Module):
             f"depth_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_depth_kernels_b2,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -300,7 +305,8 @@ class EEGNetFusion(torch.nn.Module):
                 out_channels=cnn_depth_kernels_b2,
                 kernel_size=cnn_sep_temporal_kernelsize_b2,
                 groups=cnn_depth_kernels_b2,
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -313,8 +319,7 @@ class EEGNetFusion(torch.nn.Module):
                 in_channels=cnn_depth_kernels_b2,
                 out_channels=cnn_sep_temporal_kernels_b2,
                 kernel_size=(1, 1),
-                padding="same",
-                padding_mode="constant",
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -325,6 +330,7 @@ class EEGNetFusion(torch.nn.Module):
             f"sep_temp_bnorm_b2",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_sep_temporal_kernels_b2,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -382,6 +388,7 @@ class EEGNetFusion(torch.nn.Module):
             f"temp_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_temporal_kernels_b3,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -411,6 +418,7 @@ class EEGNetFusion(torch.nn.Module):
             f"depth_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_depth_kernels_b3,
+                momentum=0.01,
                 affine=True,
             ),
         )
@@ -451,7 +459,8 @@ class EEGNetFusion(torch.nn.Module):
                 out_channels=cnn_depth_kernels_b3,
                 kernel_size=cnn_sep_temporal_kernelsize_b3,
                 groups=cnn_depth_kernels_b3,
-                padding="valid",
+                padding="same",
+                padding_mode="constant",
                 bias=False,
                 swap=True,
             ),
@@ -464,8 +473,7 @@ class EEGNetFusion(torch.nn.Module):
                 in_channels=cnn_depth_kernels_b3,
                 out_channels=cnn_sep_temporal_kernels_b3,
                 kernel_size=(1, 1),
-                padding="same",
-                padding_mode="constant",
+                padding="valid",
                 bias=False,
                 swap=True,
             ),
@@ -476,6 +484,7 @@ class EEGNetFusion(torch.nn.Module):
             f"sep_temp_bnorm_b3",
             sb.nnet.normalization.BatchNorm2d(
                 input_size=cnn_sep_temporal_kernels_b3,
+                momentum=0.01,
                 affine=True,
             ),
         )
