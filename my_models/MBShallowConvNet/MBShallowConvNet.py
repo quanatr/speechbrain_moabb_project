@@ -164,7 +164,6 @@ class MBShallowConvNet(torch.nn.Module):
                 momentum=cnn_bnorm_momentum,
                 eps=cnn_bnorm_eps,
                 affine=True,
-                pool_axis=[1, 2],
             ),
         )
 
@@ -181,6 +180,7 @@ class MBShallowConvNet(torch.nn.Module):
                 pool_type=cnn_pool_type,
                 kernel_size=cnn_pool_size,
                 stride=cnn_pool_stride,
+                pool_axis=[1, 2],
             ),
         )
 
