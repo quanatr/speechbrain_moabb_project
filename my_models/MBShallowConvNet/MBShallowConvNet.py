@@ -56,20 +56,9 @@ class MBShallowConvNet(torch.nn.Module):
                 in_channels=1,
                 out_channels=cnn_temporal_kernels_b1,
                 kernel_size=cnn_temporal_kernelsize_b1,
-                padding="same",
-                padding_mode="constant",
-                bias=False,
-                max_norm=cnn_max_norm,
+                padding="valid",
+                bias=True,
                 swap=True,
-            ),
-        )
-
-        # temporal batchnorm
-        self.branch_module_1.add_module(
-            f"temp_bnorm_b1",
-            sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_temporal_kernels_b1,
-                affine=True,
             ),
         )
 
@@ -84,7 +73,6 @@ class MBShallowConvNet(torch.nn.Module):
                 kernel_size=(1, C),
                 padding="valid",
                 bias=False,
-                max_norm=cnn_max_norm,
                 swap=True,
             ),
         )
@@ -113,6 +101,7 @@ class MBShallowConvNet(torch.nn.Module):
                 pool_type=cnn_pool_type,
                 kernel_size=cnn_pool_size,
                 stride=cnn_pool_stride,
+                pool_axis=[1, 2],
             ),
         )
 
@@ -146,22 +135,11 @@ class MBShallowConvNet(torch.nn.Module):
                 in_channels=1,
                 out_channels=cnn_temporal_kernels_b2,
                 kernel_size=cnn_temporal_kernelsize_b2,
-                padding="same",
-                padding_mode="constant",
-                bias=False,
-                max_norm=cnn_max_norm,
+                padding="valid",
+                bias=True,
                 swap=True,
             ),
         )
-
-        # temporal batchnorm
-        self.branch_module_2.add_module(
-            f"temp_bnorm_b2",
-            sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_temporal_kernels_b2,
-                affine=True,
-            ),
-        )    
 
         # spatial
         cnn_spatial_kernels_b2 = cnn_temporal_kernels_b2
@@ -174,7 +152,6 @@ class MBShallowConvNet(torch.nn.Module):
                 kernel_size=(1, C),
                 padding="valid",
                 bias=False,
-                max_norm=cnn_max_norm,
                 swap=True,
             ),
         )
@@ -187,6 +164,7 @@ class MBShallowConvNet(torch.nn.Module):
                 momentum=cnn_bnorm_momentum,
                 eps=cnn_bnorm_eps,
                 affine=True,
+                pool_axis=[1, 2],
             ),
         )
 
@@ -236,20 +214,9 @@ class MBShallowConvNet(torch.nn.Module):
                 in_channels=1,
                 out_channels=cnn_temporal_kernels_b3,
                 kernel_size=cnn_temporal_kernelsize_b3,
-                padding="same",
-                padding_mode="constant",
-                bias=False,
-                max_norm=cnn_max_norm,
+                padding="valid",
+                bias=True,
                 swap=True,
-            ),
-        )
-
-        # temporal batchnorm
-        self.branch_module_3.add_module(
-            f"temp_bnorm_b3",
-            sb.nnet.normalization.BatchNorm2d(
-                input_size=cnn_temporal_kernels_b3,
-                affine=True,
             ),
         )
 
@@ -264,7 +231,6 @@ class MBShallowConvNet(torch.nn.Module):
                 kernel_size=(1, C),
                 padding="valid",
                 bias=False,
-                max_norm=cnn_max_norm,
                 swap=True,
             ),
         )
@@ -293,6 +259,7 @@ class MBShallowConvNet(torch.nn.Module):
                 pool_type=cnn_pool_type,
                 kernel_size=cnn_pool_size,
                 stride=cnn_pool_stride,
+                pool_axis=[1, 2],
             ),
         )
 
@@ -348,8 +315,7 @@ class MBShallowConvNet(torch.nn.Module):
             "fc_out",
             sb.nnet.linear.Linear(
                 input_size=dense_input_size,
-                n_neurons=dense_n_neurons,
-                max_norm=dense_max_norm,)
+                n_neurons=dense_n_neurons,)
         )
 
         # final activation

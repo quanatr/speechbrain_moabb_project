@@ -38,7 +38,7 @@ input_shape: [null, !ref <T>, !ref <C>, null]
 # branch 1
 cnn_temporal_kernels_b1: 4 # @orion_step1: --cnn_temporal_kernels_b1~"choices([4, 8])"
 cnn_temporal_kernelsize_b1: 5 # @orion_step1: --cnn_temporal_kernelsize_b1~"choices([5, 10, 15, 16, 32])"
-dropout_b1: 0
+dropout_b1: 0.
 # branch 2
 cnn_temporal_kernels_b2: 8 # @orion_step1: --cnn_temporal_kernels_b2~"choices([8, 16])"
 cnn_temporal_kernelsize_b2: 15 # @orion_step1: --cnn_temporal_kernelsize_b2~"choices([15, 20, 25, 32, 64])"
@@ -48,7 +48,7 @@ cnn_temporal_kernels_b3: 16 # @orion_step1: --cnn_temporal_kernels_b3~"choices([
 cnn_temporal_kernelsize_b3: 20 # @orion_step1: --cnn_temporal_kernelsize_b3~"choices([20, 30, 35, 64, 128])"
 dropout_b3: 0.2
 # common params
-cnn_bnorm_momentum: 0.9
+cnn_bnorm_momentum: 0.1
 cnn_bnorm_eps: 0.00001
 cnn_max_norm: 2
 cnn_pool_type: "avg"
