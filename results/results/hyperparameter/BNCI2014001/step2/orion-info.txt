@@ -1,0 +1,85 @@
+ /usr/local/lib/python3.10/dist-packages/orion/benchmark/task/profet/model_utils.py:32: RuntimeWarning:The `profet` extras needs to be installed in order to use the Profet tasks.
+Error: cannot import name 'Tester' from 'numpy.testing' (/usr/local/lib/python3.10/dist-packages/numpy/testing/__init__.py)
+Use `pip install orion[profet]` to install the profet extras.
+Identification
+==============
+name: hyperparameter-search_step2
+version: 1
+user: root
+
+
+Commandline
+===========
+./run_experiments.sh --hparams /content/results/hyperparameter/BNCI2014001/step1/best_hparams.yaml --data_folder /content/data/BNCI2014001 --seed 1986 --output_folder /content/results/hyperparameter/BNCI2014001/step2/exp --nsbj 1 --nsess 1 --nruns 1 --eval_metric acc --eval_set dev --train_mode leave-one-session-out --rnd_dir True --device cuda --max_num_segments~uniform(2, 6, discrete=True) --amp_delta~uniform(0.0, 0.5) --snr_white_low~uniform(0.0, 15, precision=2) --snr_white_delta~uniform(5.0, 20.0, precision=3)
+
+
+Config
+======
+max trials: 50
+max broken: 3
+working dir: 
+
+
+Algorithm
+=========
+tpe:
+    equal_weight: False
+    full_weight_num: 25
+    gamma: 0.25
+    max_retry: 100
+    n_ei_candidates: 24
+    n_initial_points: 20
+    parallel_strategy:
+        of_type: StatusBasedParallelStrategy
+        strategy_configs:
+            broken:
+                of_type: MaxParallelStrategy
+    prior_weight: 1.0
+    seed: 1986
+
+
+Space
+=====
+/amp_delta: uniform(0.0, 0.5)
+/max_num_segments: uniform(2, 6, discrete=True)
+/snr_white_delta: uniform(5.0, 20.0, precision=3)
+/snr_white_low: uniform(0.0, 15.0, precision=2)
+
+
+Meta-data
+=========
+user: root
+datetime: 2024-04-08 00:45:26.443120
+orion version: 0.2.7
+VCS:
+  HEAD_sha: 6d9a8e99768111f6700c7db30c3443f3b1b5fbbd
+  active_branch: eeg
+  diff_sha: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  is_dirty: False
+  type: git
+
+
+Parent experiment
+=================
+root:
+parent:
+adapter:
+
+
+Stats
+=====
+completed: True
+trials completed: 50
+best trial:
+  id: fa701decae5a5e06516f574657c591ff
+  evaluation: 0.017857142857142794
+  params:
+    /amp_delta: 0.05499
+    /max_num_segments: 3
+    /snr_white_delta: 8.33
+    /snr_white_low: 10.0
+start time: 2024-04-08 00:45:26.443120
+finish time: 2024-04-08 02:03:54.017123
+elapsed_time: 1:18:27.025940
+
+

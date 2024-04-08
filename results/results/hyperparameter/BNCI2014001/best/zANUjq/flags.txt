@@ -1,0 +1,13 @@
+hparams: /content/results/hyperparameter/BNCI2014001/best_hparams.yaml
+data_folder: /content/data/BNCI2014001
+cached_data_folder: /content/data/BNCI2014001/pkl
+output_folder: /content/results/hyperparameter/BNCI2014001/best/zANUjq
+nsbj: 9
+nsess: 2
+seed: 1986
+nruns: 1
+eval_metric: acc
+eval_set: test
+train_mode: leave-one-session-out
+rnd_dir: True
+additional flags: --device cuda 

@@ -1,0 +1,117 @@
+ /usr/local/lib/python3.10/dist-packages/orion/benchmark/task/profet/model_utils.py:32: RuntimeWarning:The `profet` extras needs to be installed in order to use the Profet tasks.
+Error: cannot import name 'Tester' from 'numpy.testing' (/usr/local/lib/python3.10/dist-packages/numpy/testing/__init__.py)
+Use `pip install orion[profet]` to install the profet extras.
+Identification
+==============
+name: hyperparameter-search_step1
+version: 1
+user: root
+
+
+Commandline
+===========
+./run_experiments.sh --hparams /content/hyperparams.yaml --data_folder /content/data/BNCI2014001 --seed 1986 --output_folder /content/results/hyperparameter/BNCI2014001/step1/exp --nsbj 1 --nsess 1 --nruns 1 --eval_metric acc --eval_set dev --train_mode leave-one-session-out --rnd_dir True --device cuda --fmin~uniform(0.1, 5, precision=2) --fmax~uniform(20.0, 50.0, precision=3) --tmax~uniform(1.0, 4.0, precision=2) --n_steps_channel_selection~uniform(1, 3,discrete=True) --avg_models~uniform(1, 15,discrete=True) --number_of_epochs~uniform(250, 1000, discrete=True) --lr~choices([0.01, 0.005, 0.001, 0.0005, 0.0001]) --repeat_augment 0 --cnn_temporal_kernels_b1~uniform(2, 8, discrete=True) --cnn_temporal_kernelsize_b1~uniform(8, 32, discrete=True) --cnn_sep_temporal_kernelsize_b1~uniform(8, 32, discrete=True) --dropout_b1~uniform(0.0, 0.5) --cnn_temporal_kernels_b2~uniform(4, 16, discrete=True) --cnn_temporal_kernelsize_b2~uniform(16, 64, discrete=True) --cnn_sep_temporal_kernelsize_b2~uniform(8, 32, discrete=True) --dropout_b2~uniform(0.0, 0.5) --cnn_temporal_kernels_b3~uniform(8, 32, discrete=True) --cnn_temporal_kernelsize_b3~uniform(32, 128, discrete=True) --cnn_sep_temporal_kernelsize_b3~uniform(8, 32, discrete=True) --dropout_b3~uniform(0.0, 0.5) --cnn_sep_temporal_pool_size~uniform(1, 8, discrete=True)
+
+
+Config
+======
+max trials: 50
+max broken: 3
+working dir: 
+
+
+Algorithm
+=========
+tpe:
+    equal_weight: False
+    full_weight_num: 25
+    gamma: 0.25
+    max_retry: 100
+    n_ei_candidates: 24
+    n_initial_points: 20
+    parallel_strategy:
+        of_type: StatusBasedParallelStrategy
+        strategy_configs:
+            broken:
+                of_type: MaxParallelStrategy
+    prior_weight: 1.0
+    seed: 1986
+
+
+Space
+=====
+/avg_models: uniform(1, 15, discrete=True)
+/cnn_sep_temporal_kernelsize_b1: uniform(8, 32, discrete=True)
+/cnn_sep_temporal_kernelsize_b2: uniform(8, 32, discrete=True)
+/cnn_sep_temporal_kernelsize_b3: uniform(8, 32, discrete=True)
+/cnn_sep_temporal_pool_size: uniform(1, 8, discrete=True)
+/cnn_temporal_kernels_b1: uniform(2, 8, discrete=True)
+/cnn_temporal_kernels_b2: uniform(4, 16, discrete=True)
+/cnn_temporal_kernels_b3: uniform(8, 32, discrete=True)
+/cnn_temporal_kernelsize_b1: uniform(8, 32, discrete=True)
+/cnn_temporal_kernelsize_b2: uniform(16, 64, discrete=True)
+/cnn_temporal_kernelsize_b3: uniform(32, 128, discrete=True)
+/dropout_b1: uniform(0.0, 0.5)
+/dropout_b2: uniform(0.0, 0.5)
+/dropout_b3: uniform(0.0, 0.5)
+/fmax: uniform(20.0, 50.0, precision=3)
+/fmin: uniform(0.1, 5.0, precision=2)
+/lr: choices([0.01, 0.005, 0.001, 0.0005, 0.0001])
+/n_steps_channel_selection: uniform(1, 3, discrete=True)
+/number_of_epochs: uniform(250, 1000, discrete=True)
+/tmax: uniform(1.0, 4.0, precision=2)
+
+
+Meta-data
+=========
+user: root
+datetime: 2024-04-07 23:29:50.837099
+orion version: 0.2.7
+VCS:
+  HEAD_sha: 6d9a8e99768111f6700c7db30c3443f3b1b5fbbd
+  active_branch: eeg
+  diff_sha: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  is_dirty: False
+  type: git
+
+
+Parent experiment
+=================
+root:
+parent:
+adapter:
+
+
+Stats
+=====
+completed: True
+trials completed: 50
+best trial:
+  id: 649ec0730c7fda7e19d633a67bcae2f8
+  evaluation: 0.0714285714285714
+  params:
+    /avg_models: 1
+    /cnn_sep_temporal_kernelsize_b1: 9
+    /cnn_sep_temporal_kernelsize_b2: 32
+    /cnn_sep_temporal_kernelsize_b3: 14
+    /cnn_sep_temporal_pool_size: 5
+    /cnn_temporal_kernels_b1: 6
+    /cnn_temporal_kernels_b2: 7
+    /cnn_temporal_kernels_b3: 30
+    /cnn_temporal_kernelsize_b1: 26
+    /cnn_temporal_kernelsize_b2: 16
+    /cnn_temporal_kernelsize_b3: 57
+    /dropout_b1: 0.4987
+    /dropout_b2: 0.00352
+    /dropout_b3: 0.004001
+    /fmax: 21.9
+    /fmin: 0.18
+    /lr: 0.005
+    /n_steps_channel_selection: 3
+    /number_of_epochs: 468
+    /tmax: 4.0
+start time: 2024-04-07 23:29:50.837099
+finish time: 2024-04-08 00:45:10.864747
+elapsed_time: 1:15:18.760364
+
+
