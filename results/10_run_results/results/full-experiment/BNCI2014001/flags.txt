@@ -1,0 +1,13 @@
+hparams: /content/hyperparams.yaml
+data_folder: /content/data/BNCI2014001
+cached_data_folder: /content/data
+output_folder: /content/results/full-experiment/BNCI2014001
+nsbj: 9
+nsess: 2
+seed: 2165
+nruns: 10
+eval_metric: acc
+eval_set: test
+train_mode: leave-one-session-out
+rnd_dir: False
+additional flags: --number_of_epochs 468 --device cuda 

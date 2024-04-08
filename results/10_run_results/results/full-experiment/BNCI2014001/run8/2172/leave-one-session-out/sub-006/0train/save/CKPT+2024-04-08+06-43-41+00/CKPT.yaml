@@ -1,0 +1,6 @@
+# yamllint disable
+acc: 0.7321428571428571
+end-of-epoch: true
+f1: 0.7242937287116811
+loss: 0.9200233817100525
+unixtime: 1712558621.294695
