@@ -1,4 +1,0 @@
-https://arxiv.org/pdf/1611.08024.pdf (EEGNet)
-https://www.mdpi.com/2073-431X/9/3/72 (EEGFusion - 3 branches)
-https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10536894/ (EEGFusionV2 - 5 branches)
-https://www.mdpi.com/2079-6374/12/1/22 (MBEEGNet - 3 branches) 
